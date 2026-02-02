@@ -49,13 +49,12 @@
       border-radius: 14px;
       cursor: pointer;
       touch-action: manipulation;
-      transition: transform 0.15s ease;
+      transition: transform 0.2s ease;
     }
 
     #yes {
       background-color: #ff4d6d;
       color: white;
-      margin-right: 10px;
     }
 
     #no {
@@ -63,7 +62,7 @@
       color: white;
       position: absolute;
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-50%) scale(1);
       top: 80px;
     }
   </style>
@@ -93,11 +92,10 @@
     let yesScale = 1;
 
     function moveNoButton() {
-      const padding = 10;
+      const padding = 12;
 
       const maxX = window.innerWidth - noBtn.offsetWidth - padding;
       const maxY = window.innerHeight - noBtn.offsetHeight - padding;
-
       const minY = window.innerHeight * 0.45;
 
       const x = Math.random() * maxX;
@@ -106,8 +104,9 @@
       noBtn.style.left = `${x}px`;
       noBtn.style.top = `${y}px`;
 
-      noScale = Math.max(0.25, noScale - 0.08);
-      yesScale = Math.min(2.2, yesScale + 0.08);
+      // VERY small scaling changes
+      noScale = Math.max(0.65, noScale - 0.03);
+      yesScale = Math.min(1.6, yesScale + 0.03);
 
       noBtn.style.transform = `translateX(-50%) scale(${noScale})`;
       yesBtn.style.transform = `scale(${yesScale})`;
