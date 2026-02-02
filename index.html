@@ -97,16 +97,15 @@
 
     let noScale = 1;
     let yesScale = 1;
+    let noPressCount = 0;
 
     function moveNoButton() {
       const padding = 10;
-
       const areaRect = buttonsArea.getBoundingClientRect();
 
-      // NO will only move in the **bottom half** of the container to avoid YES
+      // NO moves only in the bottom half
       const minY = areaRect.height * 0.5;
       const maxY = areaRect.height - noBtn.offsetHeight - padding;
-
       const maxX = areaRect.width - noBtn.offsetWidth - padding;
 
       const x = Math.random() * maxX;
@@ -121,6 +120,13 @@
 
       noBtn.style.transform = `translateX(0) scale(${noScale})`;
       yesBtn.style.transform = `translateX(-50%) scale(${yesScale})`;
+
+      // increment press count
+      noPressCount++;
+
+      if(noPressCount >= 10) {
+        noBtn.textContent = "You better say yes!";
+      }
     }
 
     noBtn.addEventListener("mouseover", moveNoButton);
