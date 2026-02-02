@@ -50,7 +50,7 @@
       border-radius: 14px;
       cursor: pointer;
       touch-action: manipulation;
-      transition: transform 0.2s ease;
+      transition: transform 0.2s ease, opacity 0.3s ease;
       transform-origin: center;
     }
 
@@ -68,7 +68,7 @@
       color: white;
       position: absolute;
       left: 50%;
-      top: 120px; /* starts lower */
+      top: 120px;
       transform: translateX(-50%) scale(1);
     }
   </style>
@@ -115,17 +115,25 @@
       noBtn.style.top = `${y}px`;
 
       // gentle scaling
-      noScale = Math.max(0.7, noScale - 0.02);
-      yesScale = Math.min(1.6, yesScale + 0.02);
+      if (noPressCount < 30) {
+        noScale = Math.max(0.7, noScale - 0.02);
+      }
+      yesScale = Math.min(2.0, yesScale + 0.02);
 
-      noBtn.style.transform = `translateX(0) scale(${noScale})`;
+      noBtn.style.transform = `translateX(-50%) scale(${noScale})`;
       yesBtn.style.transform = `translateX(-50%) scale(${yesScale})`;
 
       // increment press count
       noPressCount++;
 
-      if(noPressCount >= 10) {
+      // update NO button text based on count
+      if (noPressCount >= 10 && noPressCount < 20) {
         noBtn.textContent = "You better say yes!";
+      } else if (noPressCount >= 20 && noPressCount < 30) {
+        noBtn.textContent = "Baby pleaseeee";
+      } else if (noPressCount >= 30) {
+        noBtn.style.opacity = 0; // hide it completely
+        noBtn.style.pointerEvents = "none"; // make it untouchable
       }
     }
 
