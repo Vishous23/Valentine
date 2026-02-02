@@ -57,6 +57,10 @@
     #yes {
       background-color: #ff4d6d;
       color: white;
+      position: absolute;
+      left: 50%;
+      top: 20px;
+      transform: translateX(-50%) scale(1);
     }
 
     #no {
@@ -64,8 +68,8 @@
       color: white;
       position: absolute;
       left: 50%;
-      top: 110px;
-      transform: scale(1);
+      top: 120px; /* starts lower */
+      transform: translateX(-50%) scale(1);
     }
   </style>
 </head>
@@ -89,7 +93,7 @@
   <script>
     const noBtn = document.getElementById("no");
     const yesBtn = document.getElementById("yes");
-    const area = document.querySelector(".buttons");
+    const buttonsArea = document.querySelector(".buttons");
 
     let noScale = 1;
     let yesScale = 1;
@@ -97,22 +101,26 @@
     function moveNoButton() {
       const padding = 10;
 
-      const areaRect = area.getBoundingClientRect();
-      const maxX = areaRect.width - noBtn.offsetWidth - padding;
+      const areaRect = buttonsArea.getBoundingClientRect();
+
+      // NO will only move in the **bottom half** of the container to avoid YES
+      const minY = areaRect.height * 0.5;
       const maxY = areaRect.height - noBtn.offsetHeight - padding;
 
+      const maxX = areaRect.width - noBtn.offsetWidth - padding;
+
       const x = Math.random() * maxX;
-      const y = Math.random() * maxY;
+      const y = minY + Math.random() * (maxY - minY);
 
       noBtn.style.left = `${x}px`;
       noBtn.style.top = `${y}px`;
 
-      // VERY gentle scaling
-      noScale = Math.max(0.7, noScale - 0.025);
-      yesScale = Math.min(1.6, yesScale + 0.025);
+      // gentle scaling
+      noScale = Math.max(0.7, noScale - 0.02);
+      yesScale = Math.min(1.6, yesScale + 0.02);
 
-      noBtn.style.transform = `scale(${noScale})`;
-      yesBtn.style.transform = `scale(${yesScale})`;
+      noBtn.style.transform = `translateX(0) scale(${noScale})`;
+      yesBtn.style.transform = `translateX(-50%) scale(${yesScale})`;
     }
 
     noBtn.addEventListener("mouseover", moveNoButton);
