@@ -39,7 +39,8 @@
 
     .buttons {
       position: relative;
-      height: 200px;
+      width: 100%;
+      height: 220px;
     }
 
     button {
@@ -50,6 +51,7 @@
       cursor: pointer;
       touch-action: manipulation;
       transition: transform 0.2s ease;
+      transform-origin: center;
     }
 
     #yes {
@@ -62,8 +64,8 @@
       color: white;
       position: absolute;
       left: 50%;
-      transform: translateX(-50%) scale(1);
-      top: 80px;
+      top: 110px;
+      transform: scale(1);
     }
   </style>
 </head>
@@ -87,28 +89,29 @@
   <script>
     const noBtn = document.getElementById("no");
     const yesBtn = document.getElementById("yes");
+    const area = document.querySelector(".buttons");
 
     let noScale = 1;
     let yesScale = 1;
 
     function moveNoButton() {
-      const padding = 12;
+      const padding = 10;
 
-      const maxX = window.innerWidth - noBtn.offsetWidth - padding;
-      const maxY = window.innerHeight - noBtn.offsetHeight - padding;
-      const minY = window.innerHeight * 0.45;
+      const areaRect = area.getBoundingClientRect();
+      const maxX = areaRect.width - noBtn.offsetWidth - padding;
+      const maxY = areaRect.height - noBtn.offsetHeight - padding;
 
       const x = Math.random() * maxX;
-      const y = minY + Math.random() * (maxY - minY);
+      const y = Math.random() * maxY;
 
       noBtn.style.left = `${x}px`;
       noBtn.style.top = `${y}px`;
 
-      // VERY small scaling changes
-      noScale = Math.max(0.65, noScale - 0.03);
-      yesScale = Math.min(1.6, yesScale + 0.03);
+      // VERY gentle scaling
+      noScale = Math.max(0.7, noScale - 0.025);
+      yesScale = Math.min(1.6, yesScale + 0.025);
 
-      noBtn.style.transform = `translateX(-50%) scale(${noScale})`;
+      noBtn.style.transform = `scale(${noScale})`;
       yesBtn.style.transform = `scale(${yesScale})`;
     }
 
