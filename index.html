@@ -21,6 +21,7 @@
       text-align: center;
       padding: 20px;
       max-width: 95%;
+      position: relative;
     }
 
     .cat-gif {
@@ -49,16 +50,15 @@
       border: none;
       border-radius: 14px;
       cursor: pointer;
-      touch-action: manipulation;
-      transition: transform 0.2s ease, opacity 0.3s ease;
+      transition: transform 0.2s ease, opacity 0.4s ease;
       transform-origin: center;
+      position: absolute;
+      left: 50%;
     }
 
     #yes {
       background-color: #ff4d6d;
       color: white;
-      position: absolute;
-      left: 50%;
       top: 20px;
       transform: translateX(-50%) scale(1);
     }
@@ -66,10 +66,57 @@
     #no {
       background-color: #555;
       color: white;
-      position: absolute;
-      left: 50%;
       top: 120px;
       transform: translateX(-50%) scale(1);
+    }
+
+    /* SHAKE */
+    @keyframes shake {
+      0% { transform: translateX(-50%) translateX(0); }
+      25% { transform: translateX(-50%) translateX(-6px); }
+      50% { transform: translateX(-50%) translateX(6px); }
+      75% { transform: translateX(-50%) translateX(-6px); }
+      100% { transform: translateX(-50%) translateX(0); }
+    }
+
+    .shake {
+      animation: shake 0.4s infinite;
+    }
+
+    /* HEARTS */
+    .heart {
+      position: absolute;
+      font-size: 22px;
+      pointer-events: none;
+      animation: floatUp 1.2s ease-out forwards;
+    }
+
+    @keyframes floatUp {
+      from {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      to {
+        transform: translateY(-90px) scale(1.6);
+        opacity: 0;
+      }
+    }
+
+    /* Bottom text */
+    .bottom-text {
+      position: absolute;
+      bottom: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 1.4rem;
+      color: white;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+      text-shadow: 2px 2px 6px rgba(0,0,0,0.35);
+    }
+
+    .show {
+      opacity: 1;
     }
   </style>
 </head>
@@ -77,8 +124,8 @@
 
   <div class="container">
     <img 
+      id="mainImage"
       src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExczdnMjk0Z3d6dnE5N3pwMWFvOXFrd2kwaWdpOHVoeDV1NXp1eGQ0cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Zl7u48zLVFgLpRwq6f/giphy.gif"
-      alt="Cute cat holding a flower"
       class="cat-gif"
     >
 
@@ -88,52 +135,76 @@
       <button id="yes">Yes</button>
       <button id="no">No</button>
     </div>
+
+    <div id="bottomText" class="bottom-text">
+      Be a good girl and say yes
+    </div>
   </div>
 
   <script>
     const noBtn = document.getElementById("no");
     const yesBtn = document.getElementById("yes");
     const buttonsArea = document.querySelector(".buttons");
+    const bottomText = document.getElementById("bottomText");
+    const mainImage = document.getElementById("mainImage");
 
+    let noPressCount = 0;
     let noScale = 1;
     let yesScale = 1;
-    let noPressCount = 0;
+
+    function spawnHearts(x, y) {
+      for (let i = 0; i < 14; i++) {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.textContent = "💖";
+        heart.style.left = x + Math.random() * 50 - 25 + "px";
+        heart.style.top = y + Math.random() * 30 - 15 + "px";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 1200);
+      }
+    }
 
     function moveNoButton() {
-      const padding = 10;
       const areaRect = buttonsArea.getBoundingClientRect();
+      const padding = 10;
 
-      // NO moves only in the bottom half
+      const maxX = areaRect.width - noBtn.offsetWidth - padding;
       const minY = areaRect.height * 0.5;
       const maxY = areaRect.height - noBtn.offsetHeight - padding;
-      const maxX = areaRect.width - noBtn.offsetWidth - padding;
 
-      const x = Math.random() * maxX;
-      const y = minY + Math.random() * (maxY - minY);
+      noBtn.style.left = Math.random() * maxX + "px";
+      noBtn.style.top = minY + Math.random() * (maxY - minY) + "px";
 
-      noBtn.style.left = `${x}px`;
-      noBtn.style.top = `${y}px`;
+      noPressCount++;
 
-      // gentle scaling
-      if (noPressCount < 30) {
-        noScale = Math.max(0.7, noScale - 0.02);
-      }
-      yesScale = Math.min(2.0, yesScale + 0.02);
+      noScale = Math.max(0.7, noScale - 0.04);
+      yesScale = Math.min(2.4, yesScale + 0.06);
 
       noBtn.style.transform = `translateX(-50%) scale(${noScale})`;
       yesBtn.style.transform = `translateX(-50%) scale(${yesScale})`;
 
-      // increment press count
-      noPressCount++;
+      if (noPressCount === 1) noBtn.textContent = "wrong answer";
+      else if (noPressCount === 2) noBtn.textContent = "baby... 🫩";
+      else if (noPressCount === 3) noBtn.textContent = "plzzz";
+      else if (noPressCount === 4) noBtn.textContent = "whyyyyy";
+      else if (noPressCount === 5) noBtn.textContent = "pretty pleasee say yes";
+      else if (noPressCount === 6) {
+        noBtn.textContent = "say yes";
+        noBtn.classList.add("shake");
+      } 
+      else if (noPressCount >= 7) {
+        const rect = noBtn.getBoundingClientRect();
+        spawnHearts(rect.left + rect.width / 2, rect.top);
 
-      // update NO button text based on count
-      if (noPressCount >= 10 && noPressCount < 20) {
-        noBtn.textContent = "You better say yes!";
-      } else if (noPressCount >= 20 && noPressCount < 30) {
-        noBtn.textContent = "Baby pleaseeee";
-      } else if (noPressCount >= 30) {
-        noBtn.style.opacity = 0; // hide it completely
-        noBtn.style.pointerEvents = "none"; // make it untouchable
+        noBtn.style.opacity = 0;
+        noBtn.style.pointerEvents = "none";
+        noBtn.classList.remove("shake");
+
+        mainImage.src = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbG52cG10OGJjeTN4NzVnMzY2bWE2d2pnZWV5ZDFrbjEwdDdwdWUzOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/zZbf6UpZslp3nvFjIR/giphy.gif";
+
+        setTimeout(() => {
+          bottomText.classList.add("show");
+        }, 1200);
       }
     }
 
@@ -150,16 +221,12 @@
           height:100vh;
           background:black;
           color:white;
-          font-family:Arial, sans-serif;
-          padding:20px;
+          font-family:Arial;
           text-align:center;
         ">
           <img src="https://media.giphy.com/media/26tOZ42Mg6pbTUPHW/giphy.gif"
-               alt="Fireworks"
                style="max-width:100%; border-radius:20px;">
-          <h1 style="margin-top:30px; font-size:clamp(2.5rem, 8vw, 4rem);">
-            YAYYYYYY 🎆🎉
-          </h1>
+          <h1 style="margin-top:30px;">YAYYYYYY 🎆🎉</h1>
         </div>
       `;
     });
