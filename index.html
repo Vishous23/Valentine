@@ -70,7 +70,6 @@
       transform: translateX(-50%) scale(1);
     }
 
-    /* SHAKE */
     @keyframes shake {
       0% { transform: translateX(-50%) translateX(0); }
       25% { transform: translateX(-50%) translateX(-6px); }
@@ -83,7 +82,6 @@
       animation: shake 0.4s infinite;
     }
 
-    /* HEARTS */
     .heart {
       position: absolute;
       font-size: 22px;
@@ -101,23 +99,6 @@
         opacity: 0;
       }
     }
-
-    /* Bottom text */
-    .bottom-text {
-      position: absolute;
-      bottom: -60px;
-      left: 50%;
-      transform: translateX(-50%);
-      font-size: 1.4rem;
-      color: white;
-      opacity: 0;
-      transition: opacity 0.6s ease;
-      text-shadow: 2px 2px 6px rgba(0,0,0,0.35);
-    }
-
-    .show {
-      opacity: 1;
-    }
   </style>
 </head>
 <body>
@@ -129,15 +110,11 @@
       class="cat-gif"
     >
 
-    <h1>Will you be my Valentine? 💖</h1>
+    <h1 id="mainText">Will you be my Valentine? 💖</h1>
 
     <div class="buttons">
       <button id="yes">Yes</button>
       <button id="no">No</button>
-    </div>
-
-    <div id="bottomText" class="bottom-text">
-      Be a good girl and say yes
     </div>
   </div>
 
@@ -145,8 +122,8 @@
     const noBtn = document.getElementById("no");
     const yesBtn = document.getElementById("yes");
     const buttonsArea = document.querySelector(".buttons");
-    const bottomText = document.getElementById("bottomText");
     const mainImage = document.getElementById("mainImage");
+    const mainText = document.getElementById("mainText");
 
     let noPressCount = 0;
     let noScale = 1;
@@ -191,7 +168,7 @@
       else if (noPressCount === 6) {
         noBtn.textContent = "say yes";
         noBtn.classList.add("shake");
-      } 
+      }
       else if (noPressCount >= 7) {
         const rect = noBtn.getBoundingClientRect();
         spawnHearts(rect.left + rect.width / 2, rect.top);
@@ -200,11 +177,11 @@
         noBtn.style.pointerEvents = "none";
         noBtn.classList.remove("shake");
 
-        mainImage.src = "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbG52cG10OGJjeTN4NzVnMzY2bWE2d2pnZWV5ZDFrbjEwdDdwdWUzOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/zZbf6UpZslp3nvFjIR/giphy.gif";
+        mainImage.src =
+          "https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExbG52cG10OGJjeTN4NzVnMzY2bWE2d2pnZWV5ZDFrbjEwdDdwdWUzOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/zZbf6UpZslp3nvFjIR/giphy.gif";
 
-        setTimeout(() => {
-          bottomText.classList.add("show");
-        }, 1200);
+        mainText.textContent =
+          "Will you please be my Valentine mommy? 💖❤️";
       }
     }
 
